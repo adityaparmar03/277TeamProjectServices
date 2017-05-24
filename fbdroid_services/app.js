@@ -10,6 +10,10 @@ var express = require('express')
   , http = require('http')
   , path = require('path');
 
+var mongo = require("./routes/mongo"); 
+
+var moongodbUrl = "mongodb://root:rootcmpe277db@ds133311.mlab.com:33311/cmpe277db";
+
 var app = express();
 
 // all environments
@@ -32,6 +36,17 @@ app.get('/', routes.index);
 app.get('/users', user.list);
 app.post('/signup', services.email);
 app.post('/signin', services.signin);
-http.createServer(app).listen(app.get('port'), function(){
-  console.log('Express server listening on port ' + app.get('port'));
+
+
+var server = http.createServer(app);
+
+//connect to the mongo collection session and then createServer
+mongo.connect(moongodbUrl, function(db){
+	global.db = db;
+	console.log('Connected to mongo at: ' + moongodbUrl);
+	http.createServer(app).listen(app.get('port'), function(){
+		console.log('Express server listening on port ' + app.get('port'));
+	});  
 });
+
+

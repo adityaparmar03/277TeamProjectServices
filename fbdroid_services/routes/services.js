@@ -1,8 +1,29 @@
 var nodemailer = require('nodemailer');
 var mongodb = require('mongodb');
+var db;
+var connected = false;
+
+
+var MongoClient = mongodb.MongoClient;
+MongoClient.connect("mongodb://root:rootcmpe277db@ds133311.mlab.com:33311/cmpe277db", function(err, database) {
+	if(!err) {
+		console.log("We are connected");
+    	db = database;
+	}
+});
+
 
 //email service 
 exports.email = function(req, res){
+	
+	var emailid = req.body.emailid;
+	var password = req.body.password;
+	db.collection('fbdroid', function (err, collection) {
+        
+        collection.insert({ emailid: emailid , password: password, verified: true });
+        console.log("Inserted emailid and password");
+
+	});
 	var transporter = nodemailer.createTransport({
 		
 		service: 'Gmail',
@@ -24,21 +45,14 @@ exports.email = function(req, res){
 	
 	//connecting to MongoDB using MongoClient
 	var MongoClient = mongodb.MongoClient;
-	MongoClient.connect("mongodb://root:rootcmpe277db@ds133311.mlab.com:33311/cmpe277db", function(err, db) {
-		if(!err) {
-	    console.log("We are connected");
 	    
 	    db.collection('fbdroid', function (err, collection) {
 	        
-	        collection.insert({ id: 1, otp: rand_number });
+	        collection.update({ emaild: emailid}, {$set:{otp: rand_number }});
 	        console.log("Inserted otp");
-	    
-	    });
-	  }
+
 	});
-	
-		
-	
+			
 	//Defining mail configuration, to from and body
 	var mailOptions = {
 		    
@@ -53,10 +67,44 @@ exports.email = function(req, res){
 	transporter.sendMail(mailOptions, function(error, info){
 	    if(error){
 	        console.log(error);
-	        res.json({yo: 'error'});
+	        res.json({'status': '400', 'mgs':error});
 	    }else{
 	        console.log('Message sent: ' + info.response);
-	        res.json({yo: info.response});
+	        res.json({'status': '200', 'msg': 'success'});
 	    };
 	});
+}
+
+/*
+ export.verify_otp = function(req, res){
+ 	var received_otp = req.otp;
+ }
+ */
+
+exports.signin = function(req, res){
+	var emailid = req.body.emailid;
+	var password = req.body.password;
+	db.collection('fbdroid', function (err, collection) {
+		if(err){
+			console.log("No such collection exists" + err);
+		}
+		else{
+			collection.find({emailid:emailid}).toArray(function(err, docs){
+				if(!err){
+					console.log(docs);
+					if(docs[0].password == password && docs[0].verified == true){
+						res.json({'status': '200', 'msg': 'success'});
+					}
+					else if(docs[0].password == password && docs[0].verified == false){
+						res.json({'status': '300', 'msg': 'verification required'});
+					}
+					else{
+						res.json({'status': '400', 'msg': 'incorrect password'})
+					}
+				}
+			})
+			
+		}
+	});
+	
 }

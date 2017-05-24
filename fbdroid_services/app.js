@@ -42,6 +42,7 @@ app.post('/verifyotp', services.verify_otp);
 
 app.post('/updateprofile', profile.profile_update);
 app.post('/addFrndForExistingUser', friends.addFrndForExistingUser);
+app.post('/addFrndForNewUser', friends.addFrndForNewUser);
 
 var server = http.createServer(app);
 

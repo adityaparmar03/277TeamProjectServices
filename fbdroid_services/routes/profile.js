@@ -12,9 +12,9 @@ exports.profile_update = function(req, res){
 			console.log("No such collection exists" + err);
 		}
 		else{
-			collection.findAndModify({"emailid": emailid}, 
+			collection.findAndModify({"emailid": emailid}, [], 
 			{$set: {"location": location, "profession": profession, "about_me": about_me, 
-			"interests": interests}}, function(err, res){
+			"interests": interests}}, {new: true}, function(err, res){
 				if(err){
 					console.warn(err);
 				}

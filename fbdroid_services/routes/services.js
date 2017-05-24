@@ -88,8 +88,8 @@ exports.email = function(req, res){
 }
 
 
- exports.verify_otp = function(req, res){
- 	var received_otp = req.body.otp;
+exports.verify_otp = function(req, res){
+	var received_otp = req.body.otp;
  	var emailid = req.body.emailid;
  	
  	global.db.collection('fbdroid', function (err, collection) {
@@ -110,12 +110,12 @@ exports.email = function(req, res){
 							res.json({'status': '400', 'msg': 'verification required'});
 							console.log("User could not be verified. wrong OTP entered.")
 						}
-					}
-				});
-			}
-		});
+				}
+			});
+		}
+	});
  	
- }
+}
  
 
 exports.signin = function(req, res){
@@ -139,9 +139,9 @@ exports.signin = function(req, res){
 						res.json({'status': '400', 'msg': 'incorrect password'})
 					}
 				}
-			})
-			
+			})			
 		}
 	});
-	
 }
+
+

@@ -7,6 +7,7 @@ var express = require('express')
   , routes = require('./routes')
   , user = require('./routes/user')
   , services = require('./routes/services')
+  , friends = require('./routes/friends')
   , http = require('http')
   , path = require('path');
 
@@ -37,7 +38,7 @@ app.get('/users', user.list);
 app.post('/signup', services.email);
 app.post('/signin', services.signin);
 app.post('/verifyotp', services.verify_otp);
-
+app.post('/addFrnd', friends.addFrnd);
 var server = http.createServer(app);
 
 //connect to the mongo collection session and then createServer

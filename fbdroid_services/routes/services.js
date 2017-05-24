@@ -1,6 +1,7 @@
 var nodemailer = require('nodemailer');
 var mongo = require("./mongo");
 var connected = false; 
+var utils = require("./utils")
 
 //email service 
 exports.email = function(req, res){
@@ -32,6 +33,7 @@ exports.email = function(req, res){
         				"location": "",
         				"profession": "",
         				"about_me": "",
+        				"interests": [],
         				"visibility": "public",
         				"notification": false,
         				"profile_pic" : "",
@@ -59,14 +61,6 @@ exports.email = function(req, res){
         });
 
 	});
-	var transporter = nodemailer.createTransport({
-		
-		service: 'Gmail',
-        auth: {
-            user: 'fbdroidservices@gmail.com', // Your email id
-            pass: 'fbcmpe277' // Your password
-        }
-	});
 		
 	//function for generating random number
 	var randomFixedInteger = function (length) {
@@ -78,35 +72,19 @@ exports.email = function(req, res){
 	
 	var text = "Verification code for FBDroid is " + rand_number;
 	var to_email = emailid
+	var data = {"content": text, "to_email": to_email, "subject": "FBDroid verification"};
 	
-	//connecting to MongoDB using MongoClient
-	global.db.collection('fbdroid', function (err, collection) {
-	        
-	    collection.update({ "emailid": emailid}, {$set:{otp: rand_number }});
-	    console.log("Inserted otp");
-
-	});
-			
-	//Defining mail configuration, to from and body
-	var mailOptions = {
-		    
-			from: 'fbdroidservices@gmail.com', // sender address
-		    to: to_email, // list of receivers
-		    subject: 'FBdroid verification', // Subject line
-		    text: text //, // plaintext body
-		    
-	};
-	
-	//Sending Email
-	transporter.sendMail(mailOptions, function(error, info){
-	    if(error){
-	        console.log(error);
-	        res.json({'status': '400', 'mgs':error});
-	    }else{
-	        console.log('Message sent: ' + info.response);
+	utils.mail(data, function(error, info){
+		if(!error){
+			console.log('Message sent: ' + info.response);
 	        res.json({'status': '200', 'msg': 'success'});
-	    };
+		}
+		else{
+			console.log(error);
+	        res.json({'status': '400', 'mgs':error});
+		}
 	});
+	
 }
 
 

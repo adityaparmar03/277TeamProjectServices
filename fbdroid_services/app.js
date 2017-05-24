@@ -8,6 +8,7 @@ var express = require('express')
   , user = require('./routes/user')
   , services = require('./routes/services')
   , friends = require('./routes/friends')
+  , profile = require('./routes/profile')
   , http = require('http')
   , path = require('path');
 
@@ -38,6 +39,7 @@ app.get('/users', user.list);
 app.post('/signup', services.email);
 app.post('/signin', services.signin);
 app.post('/verifyotp', services.verify_otp);
+app.post('/updateprofile', profile.profile_update);
 app.post('/addFrnd', friends.addFrnd);
 var server = http.createServer(app);
 

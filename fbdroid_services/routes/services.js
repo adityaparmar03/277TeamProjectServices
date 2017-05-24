@@ -18,10 +18,33 @@ exports.email = function(req, res){
 	
 	var emailid = req.body.emailid;
 	var password = req.body.password;
+	console.log(emailid);
+	console.log(password);
+	
 	db.collection('fbdroid', function (err, collection) {
-        
-        collection.insert({ emailid: emailid , password: password, verified: true });
-        console.log("Inserted emailid and password");
+        	
+		if(err){
+			console.log("No such collection found " + err);
+			return;
+		}
+		
+        collection.find({"emailid": emailid}).toArray(function(err, docs){
+        	if(err){
+        		console.log(err);
+        	}
+        	else{
+        		if(docs.length == 0){
+        			collection.insert({ emailid: emailid , password: password, verified: false });
+        			console.log("Inserted emailid and password");
+        			res.json({'status': '200', 'msg': 'Inserted new user'})
+        		}
+        		else{
+        			console.log(docs[0]);
+        			res.json({'status': '300', 'msg': 'User already exists'});
+        		}
+        	
+        	}
+        });
 
 	});
 	var transporter = nodemailer.createTransport({
@@ -42,13 +65,14 @@ exports.email = function(req, res){
 	console.log(rand_number);
 	
 	var text = "Verification code for FBDroid is " + rand_number;
+	var to_email = emailid
 	
 	//connecting to MongoDB using MongoClient
 	var MongoClient = mongodb.MongoClient;
 	    
 	    db.collection('fbdroid', function (err, collection) {
 	        
-	        collection.update({ emaild: emailid}, {$set:{otp: rand_number }});
+	        collection.update({ "emailid": emailid}, {$set:{otp: rand_number }});
 	        console.log("Inserted otp");
 
 	});
@@ -57,8 +81,8 @@ exports.email = function(req, res){
 	var mailOptions = {
 		    
 			from: 'fbdroidservices@gmail.com', // sender address
-		    to: 'deepikakalani@gmail.com', // list of receivers
-		    subject: 'Email Example', // Subject line
+		    to: to_email, // list of receivers
+		    subject: 'FBdroid verification', // Subject line
 		    text: text //, // plaintext body
 		    
 	};
@@ -75,11 +99,36 @@ exports.email = function(req, res){
 	});
 }
 
-/*
- export.verify_otp = function(req, res){
- 	var received_otp = req.otp;
+
+ exports.verify_otp = function(req, res){
+ 	var received_otp = req.body.otp;
+ 	var emailid = req.body.emailid;
+ 	
+ 	db.collection('fbdroid', function (err, collection) {
+		if(err){
+			console.log("No such collection exists" + err);
+		}
+		else{
+			collection.find({"emailid": emailid}).toArray(function(err, docs){
+				if(err){
+	        		console.log("No such user found "+ err);
+	        	}
+				else{
+						if(received_otp == docs[0].otp){
+							res.json({'status': '200', 'msg': 'verified'});
+							console.log("User verified with OTP");
+						}
+						else{
+							res.json({'status': '400', 'msg': 'verification required'});
+							console.log("User could not be verified. wrong OTP entered.")
+						}
+					}
+				});
+			}
+		});
+ 	
  }
- */
+ 
 
 exports.signin = function(req, res){
 	var emailid = req.body.emailid;

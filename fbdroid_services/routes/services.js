@@ -1,17 +1,6 @@
 var nodemailer = require('nodemailer');
-var mongodb = require('mongodb');
-var db;
-var connected = false;
-
-
-var MongoClient = mongodb.MongoClient;
-MongoClient.connect("mongodb://root:rootcmpe277db@ds133311.mlab.com:33311/cmpe277db", function(err, database) {
-	if(!err) {
-		console.log("We are connected");
-    	db = database;
-	}
-});
-
+var mongo = require("./mongo");
+var connected = false; 
 
 //email service 
 exports.email = function(req, res){
@@ -21,7 +10,7 @@ exports.email = function(req, res){
 	console.log(emailid);
 	console.log(password);
 	
-	db.collection('fbdroid', function (err, collection) {
+	global.db.collection('fbdroid', function (err, collection) {
         	
 		if(err){
 			console.log("No such collection found " + err);
@@ -34,8 +23,31 @@ exports.email = function(req, res){
         	}
         	else{
         		if(docs.length == 0){
-        			collection.insert({ emailid: emailid , password: password, verified: false });
-        			console.log("Inserted emailid and password");
+        			collection.insert({
+        				"emailid" : emailid,
+        				"password": password,
+        				"screenname": "",
+        				"verified" : false,
+        				"otp" : "",
+        				"location": "",
+        				"profession": "",
+        				"about_me": "",
+        				"visibility": "public",
+        				"notification": false,
+        				"profile_pic" : "",
+        				"frnds": [],
+        				"pending_req": [],
+        				"sent_req": [],
+        				"following" :[],
+        				"posts" : 
+        					[{
+        						"content": "", 
+        						"media_url": "",
+        						"timestamp": "",
+        					}]
+        			});
+        			//collection.insert({ emailid: emailid , password: password, verified: false });
+        			console.log("Inserted a document");
         			res.json({'status': '200', 'msg': 'Inserted new user'})
         		}
         		else{
@@ -68,12 +80,10 @@ exports.email = function(req, res){
 	var to_email = emailid
 	
 	//connecting to MongoDB using MongoClient
-	var MongoClient = mongodb.MongoClient;
-	    
-	    db.collection('fbdroid', function (err, collection) {
+	global.db.collection('fbdroid', function (err, collection) {
 	        
-	        collection.update({ "emailid": emailid}, {$set:{otp: rand_number }});
-	        console.log("Inserted otp");
+	    collection.update({ "emailid": emailid}, {$set:{otp: rand_number }});
+	    console.log("Inserted otp");
 
 	});
 			
@@ -104,7 +114,7 @@ exports.email = function(req, res){
  	var received_otp = req.body.otp;
  	var emailid = req.body.emailid;
  	
- 	db.collection('fbdroid', function (err, collection) {
+ 	global.db.collection('fbdroid', function (err, collection) {
 		if(err){
 			console.log("No such collection exists" + err);
 		}
@@ -133,7 +143,7 @@ exports.email = function(req, res){
 exports.signin = function(req, res){
 	var emailid = req.body.emailid;
 	var password = req.body.password;
-	db.collection('fbdroid', function (err, collection) {
+	global.db.collection('fbdroid', function (err, collection) {
 		if(err){
 			console.log("No such collection exists" + err);
 		}

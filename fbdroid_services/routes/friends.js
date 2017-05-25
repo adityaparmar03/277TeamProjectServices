@@ -198,7 +198,7 @@ exports.fetchPendingRequests= function(req, res){
 								throw err;
 							}else{
 								console.log( "Required Data : " + JSON.stringify(result ));
-								res.json ( {'status' : '200' , 'data' : result}) ;
+								res.json ( result) ;
 
 							}
 						} );
@@ -243,7 +243,7 @@ exports.fetchSentRequests= function(req, res){
 								throw err;
 							}else{
 								console.log( "Required Data : " + JSON.stringify(result ));
-								res.json ( {'status' : '200' , 'data' : result}) ;
+								res.json ( result ) ;
 
 							}
 						} );
@@ -410,7 +410,7 @@ exports.fetchFriendsDtls = function (req, res){
 							throw err;
 						}else{
 							console.log( "In friend.js : fetchFriendsDtls : Required Data : " + JSON.stringify(result ));
-							res.json ( {'status' : '200' , 'data' : result}) ;
+							res.json ( result ) ;
 
 						}
 					});

@@ -51,6 +51,7 @@ app.get('/fetchSentRequests/:emailid', friends.fetchSentRequests) ;
 app.post('/confirmPendingFrndRequest' , friends.confirmPendingFrndRequest ) ;
 app.post('/rejectPendingFrndRequest', friends.rejectPendingFrndRequest) ;
 app.get('/fetchFriendsDtls/:emailid' ,friends.fetchFriendsDtls) ;
+app.post('/followUser' , friends.followUser) ;
 
 
 var server = http.createServer(app);

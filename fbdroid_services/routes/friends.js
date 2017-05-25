@@ -421,17 +421,34 @@ exports.fetchFriendsDtls = function (req, res){
 	});
 }
 
-
+//Method to follow a particular user
 exports.followUser = function(req, res) {
 
-	var follower_emailid = req.body.follower_emailid ; 
+	var current_user = req.body.current_user ; 
 	var followed_emailid = req.body.followed_emailid ; 
 
+	global.db.collection( 'fbdroid', function (err, collection) {
+
+		if(err){
+
+			console.log("In friend.js : followUser : Error while getting the collection!!") ;
+			throw err;
+		}else{
 
 
+			collection.updateOne( {'emailid' : current_user } , { $addToSet : { "following" :  followed_emailid }}, function(err , results){
 
+				if(err){
 
+					console.log("In friend.js : followUser : Error adding the user to the following list!!") ;
+					throw err ;
+				}else{
 
-}
+					res.json({'status' : '200' ,'msg' : 'Following the user successfully'}) ;
+				}
+			});
+		}
+	});
+}	
 
 

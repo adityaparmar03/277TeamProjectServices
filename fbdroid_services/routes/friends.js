@@ -204,8 +204,48 @@ exports.fetchPendingRequests= function(req, res){
 			});
 		}
 	});
-
-
-
 }
 
+
+exports.fetchSentRequests= function(req, res){
+
+	var emailid  = req.body.emailid ;
+
+	console.log("In friend.js : fetchSentRequests : Fetching Sent Request") ;
+
+	global.db.collection( 'fbdroid', function (err, collection) {
+
+		if(err){
+
+			console.log("In friend.js : fetchSentRequests : Error while fetching collection object!") ;
+			throw err;
+		}else{
+
+			collection.findOne({"emailid" : emailid}, {"_id" : 0 , "sent_req" : 1}, function (err, result){
+
+				if(err){
+
+					console.log("In friend.js : fetchSentRequests : Error while fetching sent request array!") ;
+					throw err;
+				}else{
+
+					var emailid_req_array = result.sent_req ; 
+					console.log("Result after finding pending request array : " + JSON.stringify(emailid_req_array)) ;
+					console.log("Pending Email IDs : " + JSON.stringify( emailid_req_array )) ;
+					collection.find( {"emailid" : {$in : emailid_req_array}} , {"_id" : 0 ,"emailid" :  1 , "screenname" : 1 , "profile_pic" : 1 }).toArray( function(err , result){
+
+						if(err){
+
+							console.log("In friend.js : fetchSentRequests : Error while fetching screename and profile pic for pending request array!") ;
+							throw err;
+						}else{
+							console.log( "Required Data : " + JSON.stringify(result ));
+							res.json ( {'status' : '200' , 'data' : result}) ;
+
+						}
+					} );
+				}
+			});
+		}
+	});
+}

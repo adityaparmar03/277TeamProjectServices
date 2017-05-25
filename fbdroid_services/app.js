@@ -43,11 +43,11 @@ app.post('/verifyotp', services.verify_otp);
 
 app.post('/updateprofile', profile.profile_update);
 app.get('/settings/:emailid', settings.getsettings);
-app.post('/settings/update', settings.setsettings);
-app.post('/addFrnd', friends.addFrnd);
 app.post('/addFrndForExistingUser', friends.addFrndForExistingUser);
 app.post('/addFrndForNewUser', friends.addFrndForNewUser);
 app.post('/fetchPendingRequests', friends.fetchPendingRequests) ;
+app.post('/fetchSentRequests', friends.fetchSentRequests) ;
+
 
 var server = http.createServer(app);
 

@@ -102,18 +102,8 @@ exports.addFrndForNewUser = function(req, res){
 			        				"pending_req": [requester.emailid],
 			        				"sent_req": [],
 			        				"following" :[],
-<<<<<<< HEAD
 			        				"acct_exists" : false,
-			        				"posts" : 
-			        					[{
-			        						"content": "", 
-			        						"media_url": "",
-			        						"timestamp": "",
-			        					}]
-=======
-			        				"acct_exits" : false,
 			        				"posts" : []
->>>>>>> 25b3e609803aa67b23a6a9dd276a138022b0e127
         						},function(err,result){
 
         							if(err){

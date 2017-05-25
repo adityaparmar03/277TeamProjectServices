@@ -7,6 +7,7 @@ exports.profile_update = function(req, res){
 	var profession = req.body.profession;
 	var about_me = req.body.about_me;
 	var interests = req.body.interests;
+	var profile_pic = req.body.profile_pic;
 	
 	global.db.collection('fbdroid', function (err, collection) {
 		if(err){

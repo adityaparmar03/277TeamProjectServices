@@ -41,11 +41,12 @@ exports.signup = function(req, res){
         				"pending_req": [],
         				"sent_req": [],
         				"following" :[],
+        				"acct_exits" : true,
         				"posts" : []
         			}, function(err, response){
         				if(!err){
         					console.log("Inserted a document");
-                			res.json({'status': '200', 'msg': 'Inserted new user'})
+                			//res.json({'status': '200', 'msg': 'Inserted new user'})
         				}
         				
         				else{
@@ -57,7 +58,21 @@ exports.signup = function(req, res){
         		}
         		else{
         			console.log(docs[0]);
+        			
+        			collection.findAndModify({"emailid": emailid}, [], 
+        					{$set: {"acct_exits":true, "password": password}}, {new: false}, 
+        					function(err, info){
+        						if(err){
+        							console.warn(err);
+        							res.json({'status': '400', 'msg': err});
+        						}
+        						else{
+        							console.log("Updated settings");
+        							res.json({'status': '200', 'msg': 'Settings applied'});
+        						}
+        					});
         			res.json({'status': '300', 'msg': 'User already exists'});
+        			
         		}
         	
         	}
@@ -72,6 +87,13 @@ exports.signup = function(req, res){
 	
 	var rand_number = randomFixedInteger(4);
 	console.log(rand_number);
+	
+	global.db.collection('fbdroid', function (err, collection) {
+		         
+		 	    collection.update({ "emailid": emailid}, {$set:{otp: rand_number }});
+		 	    console.log("Inserted otp");
+		 
+		 	});
 	
 	var text = "Verification code for FBDroid is " + rand_number;
 	var to_email = emailid

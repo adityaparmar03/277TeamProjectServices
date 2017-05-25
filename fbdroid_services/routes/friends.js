@@ -102,7 +102,7 @@ exports.addFrndForNewUser = function(req, res){
 			        				"pending_req": [requester.emailid],
 			        				"sent_req": [],
 			        				"following" :[],
-			        				"acct_exits" : false,
+			        				"acct_exists" : false,
 			        				"posts" : 
 			        					[{
 			        						"content": "", 

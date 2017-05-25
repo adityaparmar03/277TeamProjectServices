@@ -504,6 +504,10 @@ exports.deleteSentRequest	=  function(req, res){
 								if(result.modifiedCount == 1) {
 									console.log("In friend.js : deleteSentRequest : Deleted the sender's emailid from receiver's pending_req list successfully!!!") ;
 									res.json({'status' : '200' ,'msg' : "Deleted the sent request successfully!!"}) ;	
+								}else{
+
+									console.log("In friend.js : deleteSentRequest : Error while deleting the sender's emailid from receiver's pending_req list !!") ;
+									res.json({'status' : '400' ,'msg' : "Error deleting the sender's emailid from the pending_req[] queue!!"}) ;	
 								}
 							}
 						});

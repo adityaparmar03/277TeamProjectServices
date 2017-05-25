@@ -49,8 +49,9 @@ exports.getpost = function(req, res){
 				}
 				else{
 					console.log(results.following);
+					results.following.push(emailid);
 					
-					collection.aggregate({$match: {"emailid": {$in: results.following}}},{$project: {_id: 0, "screenname": 1, "posts": 1}},{$unwind: "$posts"}, {$sort: {"posts.timestamp": -1}}, function(err, result){
+					collection.aggregate({$match: {"emailid": {$in: results.following}}},{$unwind: "$posts"},{$project:{ "_id":0 ,"screenname" :1 ,"profile_pic" : 1, "contents": "$posts.content", "media_url": "$posts.media_url","timestamp":"$posts.timestamp"}},{$sort: {"timestamp": -1}}, function(err, result){
 						if(!err){
 							console.log("Result:" + JSON.stringify(result));
 							res.json(result);

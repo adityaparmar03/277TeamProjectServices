@@ -268,7 +268,7 @@ exports.confirmPendingFrndRequest = function (req, res){
 			throw err;
 		}else{
 
-			collection.updateOne( {'emailid' : sender_emailid } , { $addToSet : {"frnds" :  requestor_emailid  } , $pull : {"pending_req" : requestor_emailid } }, function(err , results){
+			collection.updateOne( {'emailid' : sender_emailid } , { $addToSet : {"frnds" :  requestor_emailid , "following" : requestor_emailid } , $pull : {"pending_req" : requestor_emailid } }, function(err , results){
 
 				if(err){
 
@@ -282,7 +282,7 @@ exports.confirmPendingFrndRequest = function (req, res){
 
 						//Updating the friend request sender's friend list
 
-						collection.updateOne( {'emailid' : requestor_emailid } , { $addToSet : {"frnds" :  sender_emailid  } , $pull : {"sent_req" : sender_emailid } }, function(err , results){
+						collection.updateOne( {'emailid' : requestor_emailid } , { $addToSet : {"frnds" :  sender_emailid ,"following" :  sender_emailid} , $pull : {"sent_req" : sender_emailid } }, function(err , results){
 						
 							if(err){
 
@@ -419,6 +419,19 @@ exports.fetchFriendsDtls = function (req, res){
 		}
 
 	});
+}
+
+
+exports.followUser = function(req, res) {
+
+	var follower_emailid = req.body.follower_emailid ; 
+	var followed_emailid = req.body.followed_emailid ; 
+
+
+
+
+
+
 }
 
 

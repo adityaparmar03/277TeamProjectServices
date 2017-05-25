@@ -42,7 +42,9 @@ exports.signup = function(req, res){
         				"sent_req": [],
         				"following" :[],
         				"acct_exits" : true,
-        				"posts" : []
+        				"posts" : [],
+        				"online" : true,
+        				"notifications" :[]
         			}, function(err, response){
         				if(!err){
         					console.log("Inserted a document");

@@ -59,6 +59,7 @@ app.post('/searchUsers' , user.searchUsers) ;
 app.get('/displayPostsOfUser/:emailid' , user.displayPostsOfUser ) ;
 app.post('/deleteSentRequest' , friends.deleteSentRequest ) ;
 app.get('/getUserProfile/:emailid' , profile.getUserProfile ) ;
+app.get('/getBasicUserProfile/:emailid' , profile.getBasicUserProfile ) ;
 
 
 var server = http.createServer(app);

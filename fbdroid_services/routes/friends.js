@@ -128,7 +128,7 @@ exports.addFrndForNewUser = function(req, res){
 											}
 											else{
 												console.log(error);
-										        res.json({'status': '400', 'mgs':error});
+										        res.json({'status': '400', 'mgs': 'Error'});
 											}
 										});
         							}
@@ -250,4 +250,17 @@ exports.fetchSentRequests= function(req, res){
 			});
 		}
 	});
+}
+
+
+exports.confirmRejectPendingFrndRequest = function (req, res){
+
+	var sender_emailid = req.body.requester_emailid ; 
+	var frnd_emailid = req.body.frnd_emailid ; 
+
+	var action_val = req.body.action_val ;
+
+	
+ 
+
 }

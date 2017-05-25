@@ -29,5 +29,4 @@ exports.mail = function(data , callback){
 	transporter.sendMail(mailOptions, function(error, info){
 	    callback(error, info);
 	});
-		
-} 
+}

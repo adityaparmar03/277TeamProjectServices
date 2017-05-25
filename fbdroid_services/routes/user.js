@@ -79,3 +79,33 @@ exports.displayPostsOfUser = function ( req, res ) {
 	});
 
 }
+
+//Method to check if the user is online/offline. Input is the userDtls object fetched from DB and a callback method
+exports.checkUserOnlineStatus = function( status , callback ){
+
+	console.log("In user.js : checkUserStatus : Checking if the user is online/offline") ;
+	console.log("In user.js : checkUserStatus : User status : " + userDtls.online ) ;
+	
+	if(status == null ){
+
+		console.log("In user.js : checkUserStatus : statu parameter is null!!") ;
+	}else{
+
+		if( status == true ) {
+
+		console.log("In user.js : checkUserStatus : UserDtls object is present!!") ;
+		callback ( true , null ) ;
+		}else{
+
+			console.log("In user.js : checkUserStatus : UserDtls object is not present...Some error!!") ;
+			callback (false, null) ;
+		}
+	}
+	
+	
+
+}
+
+
+
+

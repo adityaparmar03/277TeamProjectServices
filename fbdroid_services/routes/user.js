@@ -42,6 +42,48 @@ exports.searchUsers = function(req, res) {
 
 		}
 	});
+}
 
+
+exports.displayPostsOfUser = function ( req, res ) {
+
+	var emailid = req.params.emailid ; 
+
+	global.db.collection( 'fbdroid', function (err, collection) {
+
+		if(err) {
+
+			console.log("In user.js : displayPostsOfUser : Error while fetching the collection") ;
+			throw err;
+		}else{
+
+			/*collection.find( { "emailid" : emailid } ,{"_id" : 0 ,"posts" : 1 }).toArray( function(err , result ) {
+
+				if(err) {
+
+					console.log("In user.js : displayPostsOfUser : Error while fetching the posts!!");
+					throw err;
+				}else{
+
+					console.log("In user.js : displayPostsOfUser : Fetched the posts suceessfully!!");
+					res.json(result) ;
+				}
+
+			});*/
+
+			collection.aggregate({$match : { "emailid" : emailid}} ,{$project :{"_id" : 0 ,"posts" : 1}},{$unwind : "$posts"}, { $sort: { 'posts.timestamp': -1 }}, function(err,result){
+
+				if(err) {
+
+					console.log("In user.js : displayPostsOfUser : Error while fetching the posts!!");
+					throw err;
+				}else{
+
+					console.log("In user.js : displayPostsOfUser : Fetched the posts suceessfully!!");
+					res.json(result) ;
+				}
+			});
+		}
+	});
 
 }

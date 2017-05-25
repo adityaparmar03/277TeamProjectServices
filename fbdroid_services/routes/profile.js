@@ -1,6 +1,7 @@
 
 //updates the user profile
 exports.profile_update = function(req, res){
+	var screenname = req.body.screenname;
 	var emailid = req.body.emailid;
 	var location = req.body.location;
 	var profession = req.body.profession;
@@ -14,12 +15,16 @@ exports.profile_update = function(req, res){
 		else{
 			collection.findAndModify({"emailid": emailid}, [], 
 			{$set: {"location": location, "profession": profession, "about_me": about_me, 
-			"interests": interests}}, {new: false}, function(err, res){
-				if(err){
-					console.warn(err);
+			"interests": interests, "screenname": screenname}}, {new: false}, function(err, result){
+				if(err)
+				{
+					console.log(err);
+					res.json({'status':'400', 'msg': err});
 				}
-				else{
-					console.log("Updated the user profile")
+				else
+				{
+					console.log("Updated the user profile");
+					res.json({'status':'200', 'msg': 'updated'});
 				}
 			});
 		}

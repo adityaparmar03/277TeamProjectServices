@@ -197,9 +197,13 @@ exports.fetchPendingRequests= function(req, res){
 								console.log("In friend.js : fetchPendingRequests : Error while fetching screename and profile pic for pending request array!") ;
 								throw err;
 							}else{
-								console.log( "Required Data : " + JSON.stringify(result ));
-								res.json ( result) ;
-
+								if(result){
+									console.log( "In friend.js : fetchPendingRequests : Fetched Pending requests successfully!!");
+									res.json ( result) ;
+								}else{
+									console.log( "In friend.js : fetchPendingRequests : Failed to fetch the pending requests!!");
+									res.json ( []) ;
+								}
 							}
 						} );
 					}
@@ -242,9 +246,14 @@ exports.fetchSentRequests= function(req, res){
 								console.log("In friend.js : fetchSentRequests : Error while fetching screename and profile pic for pending request array!") ;
 								throw err;
 							}else{
-								console.log( "Required Data : " + JSON.stringify(result ));
-								res.json ( result ) ;
+								if(result){
+									console.log( "In friend.js : fetchSentRequests : Fetched Sent requests successfully!! ");
+									res.json ( result ) ;
+								}else{
 
+									console.log( "In friend.js : fetchSentRequests : Failed to fetch the pending sent requests!! ");
+									res.json([]) ;
+								}
 							}
 						} );
 					}
@@ -409,9 +418,14 @@ exports.fetchFriendsDtls = function (req, res){
 							console.log("In friend.js : fetchFriendsDtls : Error while fetching screename and profile pic for friends array!") ;
 							throw err;
 						}else{
-							console.log( "In friend.js : fetchFriendsDtls : Required Data : " + JSON.stringify(result ));
-							res.json ( result ) ;
+							if( result ){
+								console.log( "In friend.js : fetchFriendsDtls : Fetched friend list successfully!!" );
+								res.json ( result ) ;
+							}else{
 
+								console.log( "In friend.js : fetchFriendsDtls : Failed to fetch friend list !!");
+								res.json ( [] ) ;
+							}
 						}
 					});
 				}

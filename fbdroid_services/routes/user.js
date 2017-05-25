@@ -36,6 +36,7 @@ exports.searchUsers = function(req, res) {
 						res.json(result) ;
 					}else{
 						console.log("In user.js : searchUsers : Did not get results ") ;
+						res.json([]) ;
 					}
 				}
 			});
@@ -57,20 +58,6 @@ exports.displayPostsOfUser = function ( req, res ) {
 			throw err;
 		}else{
 
-			/*collection.find( { "emailid" : emailid } ,{"_id" : 0 ,"posts" : 1 }).toArray( function(err , result ) {
-
-				if(err) {
-
-					console.log("In user.js : displayPostsOfUser : Error while fetching the posts!!");
-					throw err;
-				}else{
-
-					console.log("In user.js : displayPostsOfUser : Fetched the posts suceessfully!!");
-					res.json(result) ;
-				}
-
-			});*/
-
 			collection.aggregate({$match : { "emailid" : emailid}} ,{$project :{"_id" : 0 ,"posts" : 1}},{$unwind : "$posts"}, { $sort: { 'posts.timestamp': -1 }}, function(err,result){
 
 				if(err) {
@@ -78,9 +65,14 @@ exports.displayPostsOfUser = function ( req, res ) {
 					console.log("In user.js : displayPostsOfUser : Error while fetching the posts!!");
 					throw err;
 				}else{
+					if(result){
+						console.log("In user.js : displayPostsOfUser : Fetched the posts suceessfully!!");
+						res.json(result) ;
+					}else{
+						console.log("In user.js : displayPostsOfUser : Couldn't fetch the posts !!");
+						res.json([]]) ;
+					}
 
-					console.log("In user.js : displayPostsOfUser : Fetched the posts suceessfully!!");
-					res.json(result) ;
 				}
 			});
 		}

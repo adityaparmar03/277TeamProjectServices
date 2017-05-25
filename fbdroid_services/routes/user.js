@@ -79,3 +79,6 @@ exports.displayPostsOfUser = function ( req, res ) {
 	});
 
 }
+
+
+

@@ -48,10 +48,17 @@ exports.signup = function(req, res){
         				"pending_req": [],
         				"sent_req": [],
         				"following" :[],
+<<<<<<< HEAD
         				"acct_exists" : true,
         				"posts" : [],
         				"notifications": [],
         				"online": true
+=======
+        				"acct_exits" : true,
+        				"posts" : [],
+        				"online" : true,
+        				"notifications" :[]
+>>>>>>> d310c96ad1b4561a06e6df4ba8c211ea3c94966d
         			}, function(err, response){
         				if(!err){
         					console.log("Inserted a document");

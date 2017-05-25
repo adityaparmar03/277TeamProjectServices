@@ -122,6 +122,18 @@ exports.verify_otp = function(req, res){
 	        	}
 				else{
 						if(received_otp == docs[0].otp){
+							collection.findAndModify({"emailid": emailid}, [], 
+		        					{$set: {"verified": true}}, {new: false}, 
+		        					function(err, info){
+		        						if(err){
+		        							console.warn(err);
+		        							res.json({'status': '400', 'msg': err});
+		        						}
+		        						else{
+		        							console.log("Updated settings");
+		        							res.json({'status': '200', 'msg': 'Verified field updated'});
+		        						}
+		        					});
 							res.json({'status': '200', 'msg': 'verified'});
 							console.log("User verified with OTP");
 						}

@@ -41,9 +41,7 @@ exports.getUserProfile = function (req, res) {
 			console.log("In user.js : getUserProfile : Error while fetching the collection") ;
 			throw err;
 		}else{
-
-
-			collection.findOne({"emailid" : emailid },{"_id" : 0 , "emailid" : 1 , "screenname" : 1 , "about_me" : 1 ,"location" : 1 ,"profession" : 1, "interests" : 1, "posts" : 1}, function(err, result){
+			collection.findOne({"emailid" : emailid },{"_id" : 0 , "emailid" : 1 , "screenname" : 1 , "about_me" : 1 ,"location" : 1 ,"profession" : 1, "interests" : 1, "posts" : 1, "online" : 1}, function(err, result){
 
 				if(err) {
 

@@ -13,6 +13,7 @@ exports.addFrndForExistingUser = function(req, res){
 	global.db.collection( 'fbdroid', function (err, collection) {
 		if(err){
 			console.log("In friend.js : addFrndForExistingUser : No such collection exists" + JSON.stringify(err));
+			throw err;
 		}
 		else{
 			
@@ -59,6 +60,7 @@ exports.addFrndForNewUser = function(req, res){
 	global.db.collection( 'fbdroid', function (err, collection) {
 		if(err){
 			console.log("In friend.js : addFrndForNewUser : No such collection exists" + JSON.stringify(err));
+			throw err;
 		}
 		else{
 			
@@ -196,7 +198,7 @@ exports.fetchPendingRequests= function(req, res){
 								throw err;
 							}else{
 								console.log( "Required Data : " + JSON.stringify(result ));
-								res.json ( {'status' : '200' , 'data' : result}) ;
+								res.json ( result) ;
 
 							}
 						} );
@@ -241,7 +243,7 @@ exports.fetchSentRequests= function(req, res){
 								throw err;
 							}else{
 								console.log( "Required Data : " + JSON.stringify(result ));
-								res.json ( {'status' : '200' , 'data' : result}) ;
+								res.json ( result ) ;
 
 							}
 						} );
@@ -263,9 +265,10 @@ exports.confirmPendingFrndRequest = function (req, res){
 		if(err){
 
 			console.log("In friend.js : confirmPendingFrndRequest : Error while getting the collection!!") ;
+			throw err;
 		}else{
 
-			collection.updateOne( {'emailid' : sender_emailid } , { $addToSet : {"frnds" :  requestor_emailid  } , $pull : {"pending_req" : requestor_emailid } }, function(err , results){
+			collection.updateOne( {'emailid' : sender_emailid } , { $addToSet : {"frnds" :  requestor_emailid , "following" : requestor_emailid } , $pull : {"pending_req" : requestor_emailid } }, function(err , results){
 
 				if(err){
 
@@ -279,7 +282,7 @@ exports.confirmPendingFrndRequest = function (req, res){
 
 						//Updating the friend request sender's friend list
 
-						collection.updateOne( {'emailid' : requestor_emailid } , { $addToSet : {"frnds" :  sender_emailid  } , $pull : {"sent_req" : sender_emailid } }, function(err , results){
+						collection.updateOne( {'emailid' : requestor_emailid } , { $addToSet : {"frnds" :  sender_emailid ,"following" :  sender_emailid} , $pull : {"sent_req" : sender_emailid } }, function(err , results){
 						
 							if(err){
 
@@ -324,6 +327,7 @@ exports.rejectPendingFrndRequest = function (req, res){
 		if(err){
 
 			console.log("In friend.js : rejectPendingFrndRequest : Error while getting the collection!!") ;
+			throw err;
 		}else{
 
 			collection.updateOne( {'emailid' : sender_emailid } , { $pull : {"pending_req" : requestor_emailid } }, function(err , results){
@@ -373,3 +377,78 @@ exports.rejectPendingFrndRequest = function (req, res){
 		}
 	});
 }
+
+
+
+exports.fetchFriendsDtls = function (req, res){
+
+	var emailid = req.params.emailid ; 
+
+	global.db.collection( 'fbdroid', function (err, collection) {
+
+		if(err){
+
+			console.log("In friend.js : fetchFriendsDtls : Error while getting the collection!!") ;
+			throw err;
+		}else{
+
+			collection.findOne({"emailid" : emailid}, {"_id" : 0 , "frnds" : 1}, function (err, result){
+
+				if(err){
+
+					console.log("In friend.js : fetchFriendsDtls : Error while fetching the friend list") ;
+					throw err;
+				}else{
+
+					var emailid_frnds_array = result.frnds ; 
+					collection.find( {"emailid" : {$in : emailid_frnds_array}} , {"_id" : 0 ,"emailid" :  1 , "screenname" : 1 , "profile_pic" : 1 }).toArray( function(err , result){
+
+
+						if(err){
+
+							console.log("In friend.js : fetchFriendsDtls : Error while fetching screename and profile pic for friends array!") ;
+							throw err;
+						}else{
+							console.log( "In friend.js : fetchFriendsDtls : Required Data : " + JSON.stringify(result ));
+							res.json ( result ) ;
+
+						}
+					});
+				}
+			});
+		}
+
+	});
+}
+
+//Method to follow a particular user
+exports.followUser = function(req, res) {
+
+	var current_user = req.body.current_user ; 
+	var followed_emailid = req.body.followed_emailid ; 
+
+	global.db.collection( 'fbdroid', function (err, collection) {
+
+		if(err){
+
+			console.log("In friend.js : followUser : Error while getting the collection!!") ;
+			throw err;
+		}else{
+
+
+			collection.updateOne( {'emailid' : current_user } , { $addToSet : { "following" :  followed_emailid }}, function(err , results){
+
+				if(err){
+
+					console.log("In friend.js : followUser : Error adding the user to the following list!!") ;
+					throw err ;
+				}else{
+
+					res.json({'status' : '200' ,'msg' : 'Following the user successfully'}) ;
+				}
+			});
+		}
+	});
+}	
+
+

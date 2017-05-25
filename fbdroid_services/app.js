@@ -53,6 +53,10 @@ app.get('/fetchPendingRequests/:emailid', friends.fetchPendingRequests) ;
 app.get('/fetchSentRequests/:emailid', friends.fetchSentRequests) ;
 app.post('/confirmPendingFrndRequest' , friends.confirmPendingFrndRequest ) ;
 app.post('/rejectPendingFrndRequest', friends.rejectPendingFrndRequest) ;
+app.get('/fetchFriendsDtls/:emailid' ,friends.fetchFriendsDtls) ;
+app.post('/followUser' , friends.followUser) ;
+app.post('/searchUsers' , user.searchUsers) ;
+app.get('/displayPostsOfUser/:emailid' , user.displayPostsOfUser ) ;
 
 
 var server = http.createServer(app);

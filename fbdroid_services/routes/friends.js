@@ -103,7 +103,9 @@ exports.addFrndForNewUser = function(req, res){
 			        				"sent_req": [],
 			        				"following" :[],
 			        				"acct_exists" : false,
-			        				"posts" : []
+			        				"posts" : [],
+			        				"notifications": [],
+			        				"online": true
         						},function(err,result){
 
         							if(err){

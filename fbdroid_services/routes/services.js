@@ -11,6 +11,13 @@ exports.signup = function(req, res){
 	console.log(emailid);
 	console.log(password);
 	
+	var randomFixedInteger = function (length) {
+		return Math.floor(Math.pow(10, length-1) + Math.random() * (Math.pow(10, length) - Math.pow(10, length-1) - 1));
+	}
+	
+	var rand_number = randomFixedInteger(4);
+	console.log(rand_number);
+	
 	global.db.collection('fbdroid', function (err, collection) {
         	
 		if(err){
@@ -29,11 +36,11 @@ exports.signup = function(req, res){
         				"password": password,
         				"screenname": "",
         				"verified" : false,
-        				"otp" : "",
+        				"otp" : rand_number,
         				"location": "",
         				"profession": "",
         				"about_me": "",
-        				"interests": [],
+        				"interests": "",
         				"visibility": false,
         				"notification": false,
         				"profile_pic" : "",
@@ -41,8 +48,10 @@ exports.signup = function(req, res){
         				"pending_req": [],
         				"sent_req": [],
         				"following" :[],
-        				"acct_exits" : true,
-        				"posts" : []
+        				"acct_exists" : true,
+        				"posts" : [],
+        				"notifications": [],
+        				"online": true
         			}, function(err, response){
         				if(!err){
         					console.log("Inserted a document");
@@ -60,7 +69,7 @@ exports.signup = function(req, res){
         			console.log(docs[0]);
         			
         			collection.findAndModify({"emailid": emailid}, [], 
-        					{$set: {"acct_exits":true, "password": password}}, {new: false}, 
+        					{$set: {"acct_exists":true, "password": password, "otp": rand_number}}, {new: false}, 
         					function(err, info){
         						if(err){
         							console.warn(err);
@@ -79,21 +88,6 @@ exports.signup = function(req, res){
         });
 
 	});
-		
-	//function for generating random number
-	var randomFixedInteger = function (length) {
-		return Math.floor(Math.pow(10, length-1) + Math.random() * (Math.pow(10, length) - Math.pow(10, length-1) - 1));
-	}
-	
-	var rand_number = randomFixedInteger(4);
-	console.log(rand_number);
-	
-	global.db.collection('fbdroid', function (err, collection) {
-		         
-		 	    collection.update({ "emailid": emailid}, {$set:{otp: rand_number }});
-		 	    console.log("Inserted otp");
-		 
-		 	});
 	
 	var text = "Verification code for FBDroid is " + rand_number;
 	var to_email = emailid

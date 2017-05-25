@@ -10,6 +10,7 @@ var express = require('express')
   , friends = require('./routes/friends')
   , profile = require('./routes/profile')
   , settings = require('./routes/settings')
+  , posts = require('./routes/posts')
   , http = require('http')
   , path = require('path');
 
@@ -44,6 +45,8 @@ app.post('/verifyotp', services.verify_otp);
 app.post('/updateprofile', profile.profile_update);
 app.get('/settings/:emailid', settings.getsettings);
 app.post('/settings/update', settings.setsettings);
+app.post('/posts/add', posts.addpost);
+app.get('/posts/:emailid', posts.getpost);
 app.post('/addFrndForExistingUser', friends.addFrndForExistingUser);
 app.post('/addFrndForNewUser', friends.addFrndForNewUser);
 app.get('/fetchPendingRequests/:emailid', friends.fetchPendingRequests) ;

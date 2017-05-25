@@ -41,12 +41,7 @@ exports.signup = function(req, res){
         				"pending_req": [],
         				"sent_req": [],
         				"following" :[],
-        				"posts" : 
-        					[{
-        						"content": "", 
-        						"media_url": "",
-        						"timestamp": "",
-        					}]
+        				"posts" : []
         			}, function(err, response){
         				if(!err){
         					console.log("Inserted a document");

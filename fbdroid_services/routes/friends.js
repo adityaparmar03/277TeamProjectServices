@@ -13,6 +13,7 @@ exports.addFrndForExistingUser = function(req, res){
 	global.db.collection( 'fbdroid', function (err, collection) {
 		if(err){
 			console.log("In friend.js : addFrndForExistingUser : No such collection exists" + JSON.stringify(err));
+			throw err;
 		}
 		else{
 			
@@ -59,6 +60,7 @@ exports.addFrndForNewUser = function(req, res){
 	global.db.collection( 'fbdroid', function (err, collection) {
 		if(err){
 			console.log("In friend.js : addFrndForNewUser : No such collection exists" + JSON.stringify(err));
+			throw err;
 		}
 		else{
 			
@@ -263,6 +265,7 @@ exports.confirmPendingFrndRequest = function (req, res){
 		if(err){
 
 			console.log("In friend.js : confirmPendingFrndRequest : Error while getting the collection!!") ;
+			throw err;
 		}else{
 
 			collection.updateOne( {'emailid' : sender_emailid } , { $addToSet : {"frnds" :  requestor_emailid  } , $pull : {"pending_req" : requestor_emailid } }, function(err , results){
@@ -324,6 +327,7 @@ exports.rejectPendingFrndRequest = function (req, res){
 		if(err){
 
 			console.log("In friend.js : rejectPendingFrndRequest : Error while getting the collection!!") ;
+			throw err;
 		}else{
 
 			collection.updateOne( {'emailid' : sender_emailid } , { $pull : {"pending_req" : requestor_emailid } }, function(err , results){
@@ -373,3 +377,48 @@ exports.rejectPendingFrndRequest = function (req, res){
 		}
 	});
 }
+
+
+
+exports.fetchFriendsDtls = function (req, res){
+
+	var emailid = req.params.emailid ; 
+
+	global.db.collection( 'fbdroid', function (err, collection) {
+
+		if(err){
+
+			console.log("In friend.js : fetchFriendsDtls : Error while getting the collection!!") ;
+			throw err;
+		}else{
+
+			collection.findOne({"emailid" : emailid}, {"_id" : 0 , "frnds" : 1}, function (err, result){
+
+				if(err){
+
+					console.log("In friend.js : fetchFriendsDtls : Error while fetching the friend list") ;
+					throw err;
+				}else{
+
+					var emailid_frnds_array = result.frnds ; 
+					collection.find( {"emailid" : {$in : emailid_frnds_array}} , {"_id" : 0 ,"emailid" :  1 , "screenname" : 1 , "profile_pic" : 1 }).toArray( function(err , result){
+
+
+						if(err){
+
+							console.log("In friend.js : fetchFriendsDtls : Error while fetching screename and profile pic for friends array!") ;
+							throw err;
+						}else{
+							console.log( "In friend.js : fetchFriendsDtls : Required Data : " + JSON.stringify(result ));
+							res.json ( {'status' : '200' , 'data' : result}) ;
+
+						}
+					});
+				}
+			});
+		}
+
+	});
+}
+
+

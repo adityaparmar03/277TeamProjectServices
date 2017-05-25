@@ -40,10 +40,14 @@ app.get('/users', user.list);
 app.post('/signup', services.signup);
 app.post('/signin', services.signin);
 app.post('/verifyotp', services.verify_otp);
+
 app.post('/updateprofile', profile.profile_update);
 app.get('/settings/:emailid', settings.getsettings);
 app.post('/settings/update', settings.setsettings);
 app.post('/addFrnd', friends.addFrnd);
+app.post('/addFrndForExistingUser', friends.addFrndForExistingUser);
+app.post('/addFrndForNewUser', friends.addFrndForNewUser);
+
 var server = http.createServer(app);
 
 //connect to the mongo collection session and then createServer

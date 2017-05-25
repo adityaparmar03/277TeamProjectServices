@@ -253,14 +253,123 @@ exports.fetchSentRequests= function(req, res){
 }
 
 
-exports.confirmRejectPendingFrndRequest = function (req, res){
+exports.confirmPendingFrndRequest = function (req, res){
 
-	var sender_emailid = req.body.requester_emailid ; 
-	var frnd_emailid = req.body.frnd_emailid ; 
+	var sender_emailid = req.body.sender_emailid ; 
+	var requestor_emailid = req.body.requestor_emailid ; 
 
-	var action_val = req.body.action_val ;
+	global.db.collection( 'fbdroid', function (err, collection) {
 
-	
- 
+		if(err){
 
+			console.log("In friend.js : confirmPendingFrndRequest : Error while getting the collection!!") ;
+		}else{
+
+			collection.updateOne( {'emailid' : sender_emailid } , { $addToSet : {"frnds" :  requestor_emailid  } , $pull : {"pending_req" : requestor_emailid } }, function(err , results){
+
+				if(err){
+
+					console.log("In friend.js : confirmPendingFrndRequest : Error while updating the sender's record for the confirm request made!!") ;
+					throw err;
+				}else {
+
+					if(results.modifiedCount == 1) {
+
+						console.log("In friend.js : confirmPendingFrndRequest : Sender's changes made...Added new friend in his list!!") ;
+
+						//Updating the friend request sender's friend list
+
+						collection.updateOne( {'emailid' : requestor_emailid } , { $addToSet : {"frnds" :  sender_emailid  } , $pull : {"sent_req" : sender_emailid } }, function(err , results){
+						
+							if(err){
+
+								console.log("In friend.js : confirmPendingFrndRequest : Error while updating the requestor's record for the confirm request made!!") ;
+								throw err;
+							}else{
+
+								if(results.modifiedCount == 1) {
+
+									console.log("In friend.js : confirmPendingFrndRequest : Updated the friend lists for both the user and the requestor!!") ;
+									res.json({'status' : '200' , 'msg' : 'Friend request confirmed successfully'}) ;
+
+								}else{
+
+									console.log("In friend.js : confirmPendingFrndRequest : Couldn't update the friend lists for both the user and the requestor!!") ;
+									res.json({'status' : '400' , 'msg' : 'Friend request not confirmed successfully'}) ;
+								}
+
+							}
+						}); 
+
+					}else{
+
+						console.log("In friend.js : confirmPendingFrndRequest : Updated the friend lists for both the user and the requestor!!") ;
+						res.json({'status' : '400' , 'msg' : 'Friend request not confirmed successfully'}) ;
+					}
+				}
+
+			});
+		}
+	});
+}
+
+
+exports.rejectPendingFrndRequest = function (req, res){
+
+	var sender_emailid = req.body.sender_emailid ; 
+	var requestor_emailid = req.body.requestor_emailid ; 
+
+	global.db.collection( 'fbdroid', function (err, collection) {
+
+		if(err){
+
+			console.log("In friend.js : rejectPendingFrndRequest : Error while getting the collection!!") ;
+		}else{
+
+			collection.updateOne( {'emailid' : sender_emailid } , { $pull : {"pending_req" : requestor_emailid } }, function(err , results){
+
+				if(err){
+
+					console.log("In friend.js : rejectPendingFrndRequest : Error while updating the sender's record for the confirm request made!!") ;
+					throw err;
+				}else {
+
+					if(results.modifiedCount == 1) {
+
+						console.log("In friend.js : rejectPendingFrndRequest : Sender's changes made...Rejected the friend request!!") ;
+
+						//Updating the friend request sender's friend list
+
+						collection.updateOne( {'emailid' : requestor_emailid } , { $pull : {"sent_req" : sender_emailid } }, function(err , results){
+						
+							if(err){
+
+								console.log("In friend.js : rejectPendingFrndRequest : Error while updating the requestor's record for the reject request made!!") ;
+								throw err;
+							}else{
+
+								if(results.modifiedCount == 1) {
+
+									console.log("In friend.js : rejectPendingFrndRequest : Updated the lists for both parties for rejecting the request!!") ;
+									res.json({'status' : '200' , 'msg' : 'Friend request rejected successfully'}) ;
+
+								}else{
+
+									console.log("In friend.js : rejectPendingFrndRequest : Couldn't update the friend lists for both the user and the requestor!!") ;
+									res.json({'status' : '400' , 'msg' : 'Friend request not rejected successfully'}) ;
+								}
+
+							}
+						}); 
+
+					}else{
+
+						console.log("In friend.js : rejectPendingFrndRequest : Updated the friend lists for both the user and the requestor!!") ;
+						res.json({'status' : '400' , 'msg' : 'Friend request not rejected successfully'}) ;
+					}
+				}
+
+			});
+		}
+	});
 }

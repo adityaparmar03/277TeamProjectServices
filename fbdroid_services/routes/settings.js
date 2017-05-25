@@ -11,7 +11,7 @@ exports.getsettings = function(req, res){
 			collection.findOne({"emailid": emailid}, function(err, docs){
 				if(!err){
 					console.log(docs);
-					res.json({'status':'200', 'msg':{'visibility': docs.visibility, 'notification': docs.notification}});
+					res.json({'status':'200', 'msg': 'success', 'visibility': docs.visibility, 'notification': docs.notification});
 				}
 				else{
 					res.json({'status': '400', 'msg':'Could not fetch settings'});
@@ -26,7 +26,7 @@ exports.getsettings = function(req, res){
 exports.setsettings = function(req, res){
 	
 	var emailid = req.body.emailid;
-	var visibility = req.body.friendsonly;
+	var visibility = req.body.visibility;
 	var notification = req.body.notification;
 	
 	global.db.collection('fbdroid', function (err, collection) {
@@ -35,7 +35,6 @@ exports.setsettings = function(req, res){
 			
 		}
 		else{
-			
 			collection.findAndModify({"emailid": emailid}, [], 
 			{$set: {"visibility":visibility, "notification": notification }}, {new: false}, 
 			function(err, info){
@@ -50,6 +49,4 @@ exports.setsettings = function(req, res){
 			});
 		}
 	});
-	
-	
 }

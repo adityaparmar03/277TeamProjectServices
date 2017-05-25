@@ -43,6 +43,7 @@ app.post('/verifyotp', services.verify_otp);
 
 app.post('/updateprofile', profile.profile_update);
 app.get('/settings/:emailid', settings.getsettings);
+app.post('/settings/update', settings.setsettings);
 app.post('/addFrndForExistingUser', friends.addFrndForExistingUser);
 app.post('/addFrndForNewUser', friends.addFrndForNewUser);
 app.get('/fetchPendingRequests/:emailid', friends.fetchPendingRequests) ;

@@ -34,7 +34,7 @@ exports.signup = function(req, res){
         				"profession": "",
         				"about_me": "",
         				"interests": [],
-        				"visibility": "public",
+        				"visibility": false,
         				"notification": false,
         				"profile_pic" : "",
         				"frnds": [],

@@ -5,9 +5,9 @@ var utils = require("./utils")
 //Method to add existing user as friend 
 exports.addFrndForExistingUser = function(req, res){
 	console.log("In friend.js : addFrndForExistingUser : Sending friend request to person! " + JSON.stringify(req.body)) ;
-	var data = req.body ;
-	var requester =  data.requester;
-	var to_be_friend = data.to_be_friend ;
+	
+	var requester_emailid =  req.body.requester_emailid;
+	var to_be_friend_emailid = req.body.to_be_friend_emailid ;
 	
 
 	global.db.collection( 'fbdroid', function (err, collection) {
@@ -17,7 +17,7 @@ exports.addFrndForExistingUser = function(req, res){
 		}
 		else{
 			
-			collection.updateOne( {'emailid' : requester.emailid } , { $addToSet : { "sent_req" :  to_be_friend.emailid  } }, function(err , results){
+			collection.updateOne( {'emailid' : requester_emailid } , { $addToSet : { "sent_req" :  to_be_friend_emailid  } }, function(err , results){
 				if(err){
 
 					console.log("In friend.js : addFrndForExistingUser :  Error while adding friend Id in sent_req array ")
@@ -27,7 +27,7 @@ exports.addFrndForExistingUser = function(req, res){
 					//console.log ("In friend.js : Modified records : " + results.modifiedCount ) ; 
 					console.log("Added in sent request array");
 
-					collection.updateOne( {'emailid' : to_be_friend.emailid } , { $addToSet : {"pending_req" :  requester.emailid  } }, function(err , results){
+					collection.updateOne( {'emailid' : to_be_friend_emailid } , { $addToSet : {"pending_req" :  requester_emailid  } }, function(err , results){
 
 						if(err){
 							console.log("In friend.js : addFrndForExistingUser :  Error while adding friend Id in pending_req array ")

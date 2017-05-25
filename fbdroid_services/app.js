@@ -9,6 +9,7 @@ var express = require('express')
   , services = require('./routes/services')
   , friends = require('./routes/friends')
   , profile = require('./routes/profile')
+  , settings = require('./routes/settings')
   , http = require('http')
   , path = require('path');
 
@@ -36,10 +37,12 @@ if ('development' == app.get('env')) {
 
 app.get('/', routes.index);
 app.get('/users', user.list);
-app.post('/signup', services.email);
+app.post('/signup', services.signup);
 app.post('/signin', services.signin);
 app.post('/verifyotp', services.verify_otp);
 app.post('/updateprofile', profile.profile_update);
+app.get('/settings/:emailid', settings.getsettings);
+app.post('/settings/update', settings.setsettings);
 app.post('/addFrnd', friends.addFrnd);
 var server = http.createServer(app);
 

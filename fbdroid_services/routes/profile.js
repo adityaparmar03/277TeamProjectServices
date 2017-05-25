@@ -14,12 +14,12 @@ exports.profile_update = function(req, res){
 		else{
 			collection.findAndModify({"emailid": emailid}, [], 
 			{$set: {"location": location, "profession": profession, "about_me": about_me, 
-			"interests": interests}}, {new: true}, function(err, res){
+			"interests": interests}}, {new: false}, function(err, res){
 				if(err){
 					console.warn(err);
 				}
 				else{
-					console.log("Updated the user profile" + res)
+					console.log("Updated the user profile")
 				}
 			});
 		}

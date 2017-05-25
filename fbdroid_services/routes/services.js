@@ -4,7 +4,7 @@ var connected = false;
 var utils = require("./utils")
 
 //email service 
-exports.email = function(req, res){
+exports.signup = function(req, res){
 	
 	var emailid = req.body.emailid;
 	var password = req.body.password;
@@ -47,10 +47,18 @@ exports.email = function(req, res){
         						"media_url": "",
         						"timestamp": "",
         					}]
+        			}, function(err, response){
+        				if(!err){
+        					console.log("Inserted a document");
+                			res.json({'status': '200', 'msg': 'Inserted new user'})
+        				}
+        				
+        				else{
+        					console.log(err);
+        					res.json({'status': '400', 'msg': 'Creation of user failed'})
+        				}
         			});
-        			//collection.insert({ emailid: emailid , password: password, verified: false });
-        			console.log("Inserted a document");
-        			res.json({'status': '200', 'msg': 'Inserted new user'})
+        			
         		}
         		else{
         			console.log(docs[0]);

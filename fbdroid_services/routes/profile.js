@@ -12,24 +12,45 @@ exports.profile_update = function(req, res){
 	global.db.collection('fbdroid', function (err, collection) {
 		if(err){
 			console.log("No such collection exists" + err);
+			throw err ;
 		}
 		else{
-			collection.findAndModify({"emailid": emailid}, [], 
-			{$set: {"location": location, "profession": profession, "about_me": about_me, 
-			"interests": interests, "screenname": screenname}}, {new: false}, function(err, result){
-				if(err)
-				{
-					console.log(err);
-					res.json({'status':'400', 'msg': err});
-				}
-				else
-				{
-					console.log("Updated the user profile");
-					res.json({'status':'200', 'msg': 'updated'});
+
+			collection.findOne( {"screenname" : screenname},function(err , result){
+
+				if(err) {
+
+					console.log("In profile.js : profile_update  : Error while fetching the user details to check for duplicate record based on the screenname") ;
+					throw err;
+
+				}else{
+
+					if(result) {
+
+						console.log("In profile.js : profile_update : Duplicate screenname. So returning negative response!!!") ;
+						res.json({'status':'300', 'msg': 'Duplicate screenname'});
+
+					}else{
+
+						console.log("In profile.js : profile_update : screenname is unique ") ;
+						collection.findAndModify( {"emailid": emailid}, [], 
+						{$set: {"location": location, "profession": profession, "about_me": about_me, 
+						"interests": interests, "screenname": screenname}}, {new: false}, function(err, result){
+							if(err)
+							{
+								console.log(err);
+								res.json({'status':'400', 'msg': err});
+							}
+							else
+							{
+								console.log("Updated the user profile");
+								res.json({'status':'200', 'msg': 'updated'});
+							}
+						});
+					}
 				}
 			});
 		}
-		
 	});
 }
 

@@ -165,7 +165,7 @@ exports.addFrndForNewUser = function(req, res){
 
 exports.fetchPendingRequests= function(req, res){
 
-	var emailid  = req.body.emailid ;
+	var emailid  = req.params.emailid ;
 
 	console.log("In friend.js : fetchPendingRequests : Fetching Pending Request") ;
 
@@ -184,22 +184,23 @@ exports.fetchPendingRequests= function(req, res){
 					console.log("In friend.js : fetchPendingRequests : Error while fetching pending request array!") ;
 					throw err;
 				}else{
+					if(result){
+						var emailid_req_array = result.pending_req ; 
+						console.log("Result after finding pending request array : " + JSON.stringify(emailid_req_array)) ;
+						console.log("Pending Email IDs : " + JSON.stringify( emailid_req_array )) ;
+						collection.find( {"emailid" : {$in : emailid_req_array}} , {"_id" : 0 ,"emailid" :  1 , "screenname" : 1 , "profile_pic" : 1 }).toArray( function(err , result){
 
-					var emailid_req_array = result.pending_req ; 
-					console.log("Result after finding pending request array : " + JSON.stringify(emailid_req_array)) ;
-					console.log("Pending Email IDs : " + JSON.stringify( emailid_req_array )) ;
-					collection.find( {"emailid" : {$in : emailid_req_array}} , {"_id" : 0 ,"emailid" :  1 , "screenname" : 1 , "profile_pic" : 1 }).toArray( function(err , result){
+							if(err){
 
-						if(err){
+								console.log("In friend.js : fetchPendingRequests : Error while fetching screename and profile pic for pending request array!") ;
+								throw err;
+							}else{
+								console.log( "Required Data : " + JSON.stringify(result ));
+								res.json ( {'status' : '200' , 'data' : result}) ;
 
-							console.log("In friend.js : fetchPendingRequests : Error while fetching screename and profile pic for pending request array!") ;
-							throw err;
-						}else{
-							console.log( "Required Data : " + JSON.stringify(result ));
-							res.json ( {'status' : '200' , 'data' : result}) ;
-
-						}
-					} );
+							}
+						} );
+					}
 				}
 			});
 		}
@@ -209,7 +210,7 @@ exports.fetchPendingRequests= function(req, res){
 
 exports.fetchSentRequests= function(req, res){
 
-	var emailid  = req.body.emailid ;
+	var emailid  = req.params.emailid ;
 
 	console.log("In friend.js : fetchSentRequests : Fetching Sent Request") ;
 
@@ -228,22 +229,23 @@ exports.fetchSentRequests= function(req, res){
 					console.log("In friend.js : fetchSentRequests : Error while fetching sent request array!") ;
 					throw err;
 				}else{
+					if(result){
+						var emailid_req_array = result.sent_req ; 
+						console.log("Result after finding pending request array : " + JSON.stringify(emailid_req_array)) ;
+						console.log("Pending Email IDs : " + JSON.stringify( emailid_req_array )) ;
+						collection.find( {"emailid" : {$in : emailid_req_array}} , {"_id" : 0 ,"emailid" :  1 , "screenname" : 1 , "profile_pic" : 1 }).toArray( function(err , result){
 
-					var emailid_req_array = result.sent_req ; 
-					console.log("Result after finding pending request array : " + JSON.stringify(emailid_req_array)) ;
-					console.log("Pending Email IDs : " + JSON.stringify( emailid_req_array )) ;
-					collection.find( {"emailid" : {$in : emailid_req_array}} , {"_id" : 0 ,"emailid" :  1 , "screenname" : 1 , "profile_pic" : 1 }).toArray( function(err , result){
+							if(err){
 
-						if(err){
+								console.log("In friend.js : fetchSentRequests : Error while fetching screename and profile pic for pending request array!") ;
+								throw err;
+							}else{
+								console.log( "Required Data : " + JSON.stringify(result ));
+								res.json ( {'status' : '200' , 'data' : result}) ;
 
-							console.log("In friend.js : fetchSentRequests : Error while fetching screename and profile pic for pending request array!") ;
-							throw err;
-						}else{
-							console.log( "Required Data : " + JSON.stringify(result ));
-							res.json ( {'status' : '200' , 'data' : result}) ;
-
-						}
-					} );
+							}
+						} );
+					}
 				}
 			});
 		}

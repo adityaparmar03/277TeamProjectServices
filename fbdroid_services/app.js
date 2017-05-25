@@ -45,8 +45,8 @@ app.post('/updateprofile', profile.profile_update);
 app.get('/settings/:emailid', settings.getsettings);
 app.post('/addFrndForExistingUser', friends.addFrndForExistingUser);
 app.post('/addFrndForNewUser', friends.addFrndForNewUser);
-app.post('/fetchPendingRequests', friends.fetchPendingRequests) ;
-app.post('/fetchSentRequests', friends.fetchSentRequests) ;
+app.get('/fetchPendingRequests/:emailid', friends.fetchPendingRequests) ;
+app.get('/fetchSentRequests/:emailid', friends.fetchSentRequests) ;
 
 
 var server = http.createServer(app);

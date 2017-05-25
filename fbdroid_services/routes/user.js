@@ -70,7 +70,7 @@ exports.displayPostsOfUser = function ( req, res ) {
 						res.json(result) ;
 					}else{
 						console.log("In user.js : displayPostsOfUser : Couldn't fetch the posts !!");
-						res.json([]]) ;
+						res.json([]) ;
 					}
 
 				}

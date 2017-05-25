@@ -463,6 +463,59 @@ exports.followUser = function(req, res) {
 			});
 		}
 	});
-}	
+}
+
+//Method to delete the sent friend request. This wil delete the request from the sender's 'sent_req' list and 
+//from the receiver's 'pending_req' list
+exports.deleteSentRequest	=  function(req, res){
+
+	console.log(" In friend.js : deleteSentRequest : Deleting the sent request !!") ;
+	var sender_emailid = req.body.sender_emailid ; 
+	var receiver_emailid = req.body.receiver_emailid ; 
+
+	global.db.collection ('fbdroid', function (err, collection) {
+
+		if(err){
+
+			console.log("In friend.js : deleteSentRequest : Error while getting the collection!!") ;
+			throw err;
+		}else{
+			//Delete the emailid of the receiver from the sender's 'sent_req' array
+			collection.updateOne({'emailid' : sender_emailid } ,{ $pull : {"sent_req" : receiver_emailid } } , 
+				function(err , result ){
+
+				if(err){
+
+					console.log("In friend.js : deleteSentRequest : Error while deleting the emailid from the sent_req[] of the request sender!!!") ;
+					throw err;
+				}else{
+
+					if(result.modifiedCount == 1) {
+
+						console.log("In friend.js : deleteSentRequest : Deleted the receiver's emailid from the sent_req[] list of the sender!!!") ;
+						collection.updateOne({'emailid' : receiver_emailid} ,{ $pull : {"pending_req" : sender_emailid } } , function(err , result ){
+
+							if(err){
+
+								console.log("In friend.js : deleteSentRequest : Error while deleting the sender's emailid from the 'pendin_req' list of the receiver!!!") ;
+								throw err;
+							}else{
+
+								if(result.modifiedCount == 1) {
+									console.log("In friend.js : deleteSentRequest : Deleted the sender's emailid from receiver's pending_req list successfully!!!") ;
+									res.json({'status' : '200' ,'msg' : "Deleted the sent request successfully!!"}) ;	
+								}
+							}
+						});
+
+					}else{
+
+						res.json({'status' : '400' , 'msg' : "Error deleting the receiver's emailid from the sent_req[] queue!!"}) ;
+					}
+				}
+			});
+		}
+	});
+}
 
 

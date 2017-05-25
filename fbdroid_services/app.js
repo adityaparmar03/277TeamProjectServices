@@ -47,6 +47,7 @@ app.post('/settings/update', settings.setsettings);
 app.post('/addFrnd', friends.addFrnd);
 app.post('/addFrndForExistingUser', friends.addFrndForExistingUser);
 app.post('/addFrndForNewUser', friends.addFrndForNewUser);
+app.post('/fetchPendingRequests', friends.fetchPendingRequests) ;
 
 var server = http.createServer(app);
 

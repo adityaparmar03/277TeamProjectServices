@@ -1,13 +1,13 @@
 
 //updates the user profile
 exports.profile_update = function(req, res){
-	var screenname = req.body.screenname;
+	var screenname = req.body.screenName;
 	var emailid = req.body.emailid;
-	var location = req.body.location;
+	var location1 = req.body.location;
 	var profession = req.body.profession;
-	var about_me = req.body.about_me;
+	var about_me = req.body.aboutme;
 	var interests = req.body.interests;
-	var profile_pic = req.body.profile_pic;
+	var profile_pic = req.body.profilepicUrl;
 	
 	global.db.collection('fbdroid', function (err, collection) {
 		if(err){

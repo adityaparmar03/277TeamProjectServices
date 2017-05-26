@@ -45,6 +45,43 @@ exports.searchUsers = function(req, res) {
 	});
 }
 
+exports.publicProfiles = function(req, res) {
+
+	var search_text = req.body.search_text ;
+	console.log( "In user.js : Search Text : " + search_text ) ;
+	console.log("In user.js : publicProfiles : Search the users list for the given text search") ;
+
+	global.db.collection( 'fbdroid', function (err, collection) {
+		
+		if(err){
+			console.log("In user.js : publicProfiles : Error while finding the collection!!");
+			throw err;
+		}else{
+
+			collection.find( {"visibility" : true } ,{"_id" : 0 ,"emailid" :  1 , "screenname" : 1 , "profile_pic" : 1 }).toArray(  
+				//{"_id" : 0 ,"emailid" :  1 , "screenname" : 1 , "profile_pic" : 1 } ,
+			 function(err, result){
+
+				if(err){
+
+					console.log("In user.js : publicProfiles : Error while fetching the users based on the search criteria!!");
+					throw err;
+				}else{
+					if(result){
+						console.log("In user.js : publicProfiles : Got results ") ;
+						res.json(result) ;
+					}else{
+						console.log("In user.js : publicProfiles : Did not get results ") ;
+						res.json([]) ;
+					}
+				}
+			});
+
+		}
+	});
+}
+
+
 
 exports.displayPostsOfUser = function ( req, res ) {
 

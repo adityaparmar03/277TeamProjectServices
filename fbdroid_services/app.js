@@ -60,6 +60,7 @@ app.get('/displayPostsOfUser/:emailid' , user.displayPostsOfUser ) ;
 app.post('/deleteSentRequest' , friends.deleteSentRequest ) ;
 app.get('/getUserProfile/:emailid' , profile.getUserProfile ) ;
 app.get('/getBasicUserProfile/:emailid' , profile.getBasicUserProfile ) ;
+app.get('/publicProfiles' , user.publicProfiles) ;
 
 
 var server = http.createServer(app);

@@ -128,7 +128,7 @@ function sendNotificationsToFollowers( emailid , data , res  ) {
 					}else{
 
 						console.log("In posts.js : sendNotificationsToFollowers : No result returned for the followers!!!!") ;
-						res.json({'status' : '400' , 'msg' : 'Error while fetching the followers!!!'}) ;
+						res.json({'status' : '200' ,'msg' : 'Posts added successfully!!!!'})
 					}
 				}
 

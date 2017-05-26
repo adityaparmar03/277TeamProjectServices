@@ -5,9 +5,9 @@ var utils = require("./utils")
 //Method to add existing user as friend 
 exports.addFrndForExistingUser = function(req, res){
 	console.log("In friend.js : addFrndForExistingUser : Sending friend request to person! " + JSON.stringify(req.body)) ;
-	var data = req.body ;
-	var requester =  data.requester;
-	var to_be_friend = data.to_be_friend ;
+	
+	var requester_emailid =  req.body.requester_emailid;
+	var to_be_friend_emailid = req.body.to_be_friend_emailid ;
 	
 
 	global.db.collection( 'fbdroid', function (err, collection) {
@@ -17,7 +17,7 @@ exports.addFrndForExistingUser = function(req, res){
 		}
 		else{
 			
-			collection.updateOne( {'emailid' : requester.emailid } , { $addToSet : { "sent_req" :  to_be_friend.emailid  } }, function(err , results){
+			collection.updateOne( {'emailid' : requester_emailid } , { $addToSet : { "sent_req" :  to_be_friend_emailid  } }, function(err , results){
 				if(err){
 
 					console.log("In friend.js : addFrndForExistingUser :  Error while adding friend Id in sent_req array ")
@@ -27,7 +27,7 @@ exports.addFrndForExistingUser = function(req, res){
 					//console.log ("In friend.js : Modified records : " + results.modifiedCount ) ; 
 					console.log("Added in sent request array");
 
-					collection.updateOne( {'emailid' : to_be_friend.emailid } , { $addToSet : {"pending_req" :  requester.emailid  } }, function(err , results){
+					collection.updateOne( {'emailid' : to_be_friend_emailid } , { $addToSet : {"pending_req" :  requester_emailid  } }, function(err , results){
 
 						if(err){
 							console.log("In friend.js : addFrndForExistingUser :  Error while adding friend Id in pending_req array ")
@@ -203,6 +203,10 @@ exports.fetchPendingRequests= function(req, res){
 								}
 							}
 						} );
+					}else{
+
+						console.log( "In friend.js : fetchPendingRequests : No result returned for the pending requests!!");
+						res.json ( []) ;
 					}
 				}
 			});
@@ -215,7 +219,7 @@ exports.fetchSentRequests= function(req, res){
 
 	var emailid  = req.params.emailid ;
 
-	console.log("In friend.js : fetchSentRequests : Fetching Sent Request") ;
+	console.log("In friend.js : fetchSentRequests : Fetching Sent Request : ", emailid) ;
 
 	global.db.collection( 'fbdroid', function (err, collection) {
 
@@ -224,7 +228,7 @@ exports.fetchSentRequests= function(req, res){
 			console.log("In friend.js : fetchSentRequests : Error while fetching collection object!") ;
 			throw err;
 		}else{
-
+			console.log("In friend.js : fetchSentRequests : successfully fetched collection!!!") ;
 			collection.findOne({"emailid" : emailid}, {"_id" : 0 , "sent_req" : 1}, function (err, result){
 
 				if(err){
@@ -234,25 +238,36 @@ exports.fetchSentRequests= function(req, res){
 				}else{
 					if(result){
 						var emailid_req_array = result.sent_req ; 
-						console.log("Result after finding pending request array : " + JSON.stringify(emailid_req_array)) ;
+						console.log("Result after finding sent request array : " + JSON.stringify(emailid_req_array)) ;
 						console.log("Pending Email IDs : " + JSON.stringify( emailid_req_array )) ;
-						collection.find( {"emailid" : {$in : emailid_req_array}} , {"_id" : 0 ,"emailid" :  1 , "screenname" : 1 , "profile_pic" : 1 }).toArray( function(err , result){
+						if(emailid_req_array.length > 0){
 
-							if(err){
+							collection.find( {"emailid" : {$in : emailid_req_array}} , {"_id" : 0 ,"emailid" :  1 , "screenname" : 1 , "profile_pic" : 1 }).toArray( function(err , result){
 
-								console.log("In friend.js : fetchSentRequests : Error while fetching screename and profile pic for pending request array!") ;
-								throw err;
-							}else{
-								if(result){
-									console.log( "In friend.js : fetchSentRequests : Fetched Sent requests successfully!! ");
-									res.json ( result ) ;
+								if(err){
+
+									console.log("In friend.js : fetchSentRequests : Error while fetching screename and profile pic for pending request array!") ;
+									throw err;
 								}else{
+									if(result){
+										console.log( "In friend.js : fetchSentRequests : Fetched Sent requests successfully!! ");
+										res.json ( result ) ;
+									}else{
 
-									console.log( "In friend.js : fetchSentRequests : Failed to fetch the pending sent requests!! ");
-									res.json([]) ;
+										console.log( "In friend.js : fetchSentRequests : Failed to fetch the pending sent requests!! ");
+										res.json([]) ;
+									}
 								}
-							}
-						} );
+							} );
+						}else{
+
+							console.log("In friend.js : fetchSentRequests : No sent requests !!!") ;
+							res.json([]) ;
+						}
+						
+					}else{
+						console.log("In friend.js : fetchSentRequests : No result returned for the sent requests array !!!") ;
+						res.json([]) ;
 					}
 				}
 			});

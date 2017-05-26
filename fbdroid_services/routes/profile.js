@@ -35,7 +35,7 @@ exports.profile_update = function(req, res){
 						console.log("In profile.js : profile_update : screenname is unique ") ;
 						collection.findAndModify( {"emailid": emailid}, [], 
 						{$set: {"location": location, "profession": profession, "about_me": about_me, 
-						"interests": interests, "screenname": screenname}}, {new: false}, function(err, result){
+						"interests": interests, "screenname": screenname, "profile_pic": profile_pic}}, {new: false}, function(err, result){
 							if(err)
 							{
 								console.log(err);
